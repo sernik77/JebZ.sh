@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Prosty skrypt dodający mema obrazkowego.
-# Użycie: <plik config> <tytuł> <ścieżka do pliku>
+# Użycie: <plik config> <tytuł> <ścieżka do folderu lub konkretnego pliku>
 # Gdzie plik config to ciastka i tokeny danego użytkownika, każdy użytkownik ma własny config. (config musi zawierać wartości COOKIE, X-XSRF-TOKEN oraz X-CSRF-TOKEN)
 # Tytuł to tytuł wrzuty (tagi są takie jak tytuł)
-# Ścieżka do pliku to miejsce i nazwa obrazka do wrzucenia
-# Np `bash create-image.sh config/username.txt dupa obrazki/dupa.png`
+# Ścieżka do folderu lub konkretnego pliku - Jeśli podasz ścieżkę folderu, skrypt wybierze losowy obrazek w formacie jpg, jpeg, png, gif.
+# Np `bash create-image.sh config/username.txt dupa obrazki/`
 
-# Check if the user has provided a config file and a file to upload
+# Check if the user has provided a config file and a file or directory path
 if [ "$#" -ne 3 ]; then
-  echo "Usage: $0 <config_file> <title> <path_to_file>"
+  echo "Usage: $0 <config_file> <title> <path_to_folder_or_file>"
   exit 1
 fi
 
@@ -28,6 +28,21 @@ fi
 # Ensure all tokens are set
 if [ -z "$COOKIE" ] || [ -z "$X-CSRF-TOKEN" ] || [ -z "$X-XSRF-TOKEN" ]; then
   echo "Missing token(s) in the config file!"
+  exit 1
+fi
+
+# Check if the given path is a directory
+if [ -d "$FILE_PATH" ]; then
+  # Select a random image file (jpg, jpeg, png, gif) from the directory
+  FILE_PATH=$(find "$FILE_PATH" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \) | shuf -n 1)
+  
+  # Check if a file was found
+  if [ -z "$FILE_PATH" ]; then
+    echo "No valid image files found in the specified directory!"
+    exit 1
+  fi
+elif [ ! -f "$FILE_PATH" ]; then
+  echo "File does not exist!"
   exit 1
 fi
 
