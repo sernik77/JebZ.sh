@@ -8,6 +8,7 @@
 - `priv-start.sh` - Rozpocznij nową rozmowę prywatną
 - `priv-send.sh` - Wyślij wiadomość w rozmowie prywatnej 
 - `comment.sh` - Wyślij komentarz pod postem
+- `user-modify.sh` - Dodaj na czarną listę lub do obserwowanych
 
 ### Extra pierdoły:
 Pobierz losowy obrazek 1000 x 1000px \
