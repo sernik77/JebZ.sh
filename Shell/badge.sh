@@ -52,6 +52,6 @@ curl "https://jbzd.com.pl/badge/comment/give/$CID" \
   -H 'sec-fetch-site: same-origin' \
   -H 'sec-gpc: 1' \
   -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36' \
-  -H "x-csrf-token: $X_CSRF_TOKEN" \
-  -H "x-xsrf-token: $X_XSRF_TOKEN" \
+  -H "x-csrf-token: $X-CSRF-TOKEN" \
+  -H "x-xsrf-token: $X-XSRF-TOKEN" \
   --data-raw "{\"type\":\"$BADGE_TYPE\"}"
