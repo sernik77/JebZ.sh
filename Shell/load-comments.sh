@@ -1,9 +1,18 @@
 #!/bin/bash
 
+# bash load-comments.sh config.txt <UID> <pages to fetch> [--id]
+# add [--id] to additionally extract just comment id's
+
+# Check if jq is installed
+if ! command -v jq &> /dev/null; then
+  echo "jq could not be found, please install it to use this script."
+  exit 1
+fi
+
 # Check if the user has provided the required arguments
-if [ "$#" -ne 3 ]; then
-  echo "Usage: $0 <config_file> <USER_ID> <pages_to_fetch>"
-  echo "Example: $0 config.txt <USER ID> <PAGES TO FETCH>"
+if [ "$#" -lt 3 ]; then
+  echo "Usage: $0 <config_file> <USER_ID> <pages_to_fetch> [--id]"
+  echo "Example: $0 config.txt 123 5 --id"
   exit 1
 fi
 
@@ -11,11 +20,11 @@ CONFIG_FILE=$1
 USER_ID=$2
 PAGES=$3
 OUTPUT_FILE="${USER_ID}.json"
+ONLY_IDS=false
 
-# Ensure jq is installed
-if ! command -v jq &> /dev/null; then
-  echo "jq could not be found, please install it to use this script."
-  exit 1
+# Check for optional --id flag
+if [[ "$4" == "--id" ]]; then
+  ONLY_IDS=true
 fi
 
 # Load the config file manually and map variables with `-` in the names
@@ -66,10 +75,21 @@ do
     echo "Page $PAGE returned an empty response. Stopping."
     break
   else
-    # Unminify JSON with jq and append to the output file
+    # Append the response to the output file
     echo "$RESPONSE" | jq . >> "$OUTPUT_FILE"
     echo "Page $PAGE fetched and appended to $OUTPUT_FILE"
   fi
 done
+
+# If --id flag is used, extract the comment IDs from "commentable_url"
+if [ "$ONLY_IDS" = true ]; then
+  ID_OUTPUT_FILE="${USER_ID}_ids.txt"
+  > "$ID_OUTPUT_FILE"
+  
+  grep -o '"commentable_url": "https://jbzd.com.pl/comment/redirect/[0-9]*"' "$OUTPUT_FILE" | \
+  sed -E 's/.*\/([0-9]+)"/\1/' >> "$ID_OUTPUT_FILE"
+  
+  echo "Extracted IDs have been saved to $ID_OUTPUT_FILE"
+fi
 
 echo "All pages fetched and saved to $OUTPUT_FILE."
