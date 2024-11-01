@@ -12,6 +12,7 @@
 - `badge.sh` - Daj odznakę
 - `load-comments.sh` - Pobierz komentarze użytkownika
 - `vote-comment.sh` - Oceń komentarz (plus / minus)
+- `vote-user.sh` - Daj plus na profil
 
 ### Extra pierdoły:
 Pobierz losowy obrazek 1000 x 1000px \
