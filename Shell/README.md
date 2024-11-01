@@ -28,3 +28,11 @@ window.onbeforeunload = function(event) {
   return 'Are you sure you want to leave?';
 };
 ```
+> Basic payload Vue
+```
+{{ alert("UwU") }}
+```
+> Basic payload in-element
+```
+<div v-html="'<script>alert(\"UwU\")<\/script>'"></div>
+```
