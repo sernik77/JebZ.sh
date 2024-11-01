@@ -14,6 +14,7 @@
 - `vote-comment.sh` - Oceń komentarz (plus / minus)
 - `vote-user.sh` - Daj plus na profil
 - `random-meme.sh` - Pobierz memy z /losowe
+- `text-create.sh` - Wrzuć wrzute tekstową, np z pliku
 
 ### Extra pierdoły:
 Pobierz losowy obrazek 1000 x 1000px \
