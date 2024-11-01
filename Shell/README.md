@@ -10,7 +10,7 @@
 - `comment.sh` - Wyślij komentarz pod postem
 - `user-modify.sh` - Dodaj na czarną listę lub do obserwowanych
 - `badge.sh` - Daj odznakę
-- `load-comments.sh` - Wczytaj komentarze użytkownika
+- `load-comments.sh` - Pobierz komentarze użytkownika
 
 ### Extra pierdoły:
 Pobierz losowy obrazek 1000 x 1000px \
