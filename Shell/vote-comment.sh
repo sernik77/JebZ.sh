@@ -99,7 +99,7 @@ random_delay() {
 # If a file is specified, prepare the voted file
 if [ -f "$COMMENT_ID_OR_FILE" ]; then
   VOTED_FILE="${COMMENT_ID_OR_FILE}_voted"
-  > "$VOTED_FILE"  # Clear existing contents if the file already exists
+  >> "$VOTED_FILE"  # Clear existing contents if the file already exists
   
   # Iterate over each line (comment ID)
   while IFS= read -r COMMENT_ID; do
