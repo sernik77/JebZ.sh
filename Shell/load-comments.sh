@@ -30,15 +30,15 @@ fi
 # Load the config file manually and map variables with `-` in the names
 if [ -f "$CONFIG_FILE" ]; then
   COOKIE=$(grep '^COOKIE=' "$CONFIG_FILE" | cut -d'=' -f2-)
-  X_CSRF_TOKEN=$(grep '^X-CSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
-  X_XSRF_TOKEN=$(grep '^X-XSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
+  X-CSRF-TOKEN=$(grep '^X-CSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
+  X-XSRF-TOKEN=$(grep '^X-XSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
 else
   echo "Config file not found!"
   exit 1
 fi
 
 # Ensure all tokens are set
-if [ -z "$COOKIE" ] || [ -z "$X_CSRF_TOKEN" ] || [ -z "$X_XSRF_TOKEN" ]; then
+if [ -z "$COOKIE" ] || [ -z "$X-CSRF-TOKEN" ] || [ -z "$X-XSRF-TOKEN" ]; then
   echo "Missing token(s) in the config file!"
   exit 1
 fi
@@ -66,9 +66,9 @@ do
     -H 'sec-fetch-site: same-origin' \
     -H 'sec-gpc: 1' \
     -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36' \
-    -H "x-csrf-token: $X_CSRF_TOKEN" \
+    -H "x-csrf-token: $X-CSRF-TOKEN" \
     -H 'x-requested-with: XMLHttpRequest' \
-    -H "x-xsrf-token: $X_XSRF_TOKEN")
+    -H "x-xsrf-token: $X-XSRF-TOKEN")
   
   # Check if the response contains an empty message
   if [[ "$RESPONSE" == *'"message":""'* ]]; then
