@@ -68,7 +68,7 @@ random_delay() {
 # Prepare the voted log file
 if [ -f "$USER_ID_OR_FILE" ]; then
   VOTED_FILE="${USER_ID_OR_FILE}_voted"
-  > "$VOTED_FILE"  # Clear existing contents if the file already exists
+  >> "$VOTED_FILE"  # Clear existing contents if the file already exists
 
   # Iterate over each user ID in the file
   while IFS= read -r USER_ID; do
