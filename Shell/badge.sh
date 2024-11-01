@@ -87,7 +87,7 @@ random_delay() {
 # Prepare the badge log file
 if [ -f "$CID_OR_FILE" ]; then
   BADGED_FILE="${CID_OR_FILE}_badged"
-  > "$BADGED_FILE"  # Clear existing contents if the file already exists
+  >> "$BADGED_FILE"  # Clear existing contents if the file already exists
 
   # Iterate over each line (comment ID)
   while IFS= read -r COMMENT_ID; do
