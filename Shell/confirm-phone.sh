@@ -20,7 +20,7 @@ fi
 source "$CONFIG_FILE"
 
 # Check if the required variables are loaded from the config file
-if [ -z "$COOKIE" ] || [ -z "$X_CSRF_TOKEN" ] || [ -z "$X_XSRF_TOKEN" ]; then
+if [ -z "$COOKIE" ] || [ -z "$X-CSRF-TOKEN" ] || [ -z "$X-XSRF-TOKEN" ]; then
     echo "Missing values in the config file! Ensure COOKIE, X_CSRF_TOKEN, and X_XSRF_TOKEN are set."
     exit 1
 fi
@@ -47,8 +47,8 @@ response=$(curl -s 'https://jbzd.com.pl/user/phone-confirmation/confirm' \
   -H 'sec-fetch-mode: cors' \
   -H 'sec-fetch-site: same-origin' \
   -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36' \
-  -H "x-csrf-token: ${X_CSRF_TOKEN}" \
-  -H "x-xsrf-token: ${X_XSRF_TOKEN}" \
+  -H "x-csrf-token: ${X-CSRF-TOKEN}" \
+  -H "x-xsrf-token: ${X-XSRF-TOKEN}" \
   -H "content-type: multipart/form-data; boundary=${BOUNDARY}" \
   --data-raw $'------WebKitFormBoundaryr0lAzy1UpDbyo92g\r\nContent-Disposition: form-data; name="token"\r\n\r\n'"${CONFIRMATION_CODE}"$'\r\n------WebKitFormBoundaryr0lAzy1UpDbyo92g--\r\n')
 
