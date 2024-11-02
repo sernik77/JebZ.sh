@@ -17,6 +17,7 @@
 - `text-create.sh` - Wrzuć wrzute tekstową, np z pliku
 - `find-uid.sh` - Znajdź ID Użytkownika
 - `change-avatar.sh` - Zmień avatar
+- `change-password.sh` - Zmień hasło
 
 ### Extra pierdoły:
 Pobierz losowy obrazek 1000 x 1000px \
