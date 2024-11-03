@@ -20,6 +20,8 @@
 - `change-password.sh` - Zmień hasło
 - `search-query.sh` - Wyszukaj tagi, użytkowników i zawartość
 - `delete-account.sh` - Usuń konto
+- `load-conversations.sh` - Wczytaj prywatne konwersacje
+- `save-conversation.sh` - Zapisz prywatną konwersację
 
 ### Extra pierdoły:
 Pobierz losowy obrazek 1000 x 1000px \
