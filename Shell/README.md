@@ -1,49 +1,26 @@
-# Shell scripts (cURL)
-> Zestaw skryptów na bazie cURL
+# Obieraczka do requestów
+> Prosta statyczny wyciskacz requestów z dzidy w html. \
+> Ekstraktuje ciastka i tokeny z większości requestów \
+> Zapisuje w pliku .txt który potem używasz z resztą skryptów do automatyzacji
 
-## Skrypty:
-- `register.sh` - Zarejestruj nowe konto
-- `confirm-phone.sh` - Potwierdź numer telefonu
-- `create-image.sh` - Wrzuć mema z obrazkiem
-- `priv-start.sh` - Rozpocznij nową rozmowę prywatną
-- `priv-send.sh` - Wyślij wiadomość w rozmowie prywatnej 
-- `comment.sh` - Wyślij komentarz pod postem
-- `user-modify.sh` - Dodaj na czarną listę lub do obserwowanych
-- `badge.sh` - Daj odznakę
-- `load-comments.sh` - Pobierz komentarze użytkownika
-- `vote-comment.sh` - Oceń komentarz (plus / minus)
-- `vote-user.sh` - Daj plus na profil
-- `random-meme.sh` - Pobierz memy z /losowe
-- `text-create.sh` - Wrzuć wrzute tekstową, np z pliku
-- `find-uid.sh` - Znajdź ID Użytkownika
-- `change-avatar.sh` - Zmień avatar
-- `change-password.sh` - Zmień hasło
-- `search-query.sh` - Wyszukaj tagi, użytkowników i zawartość
-- `delete-account.sh` - Usuń konto
-- `load-conversations.sh` - Wczytaj prywatne konwersacje
-- `save-conversation.sh` - Zapisz prywatną konwersację
-- `read-notifications.sh` - Zapisz treść powiadomień
-- `vote-content.sh` - Daj plus pod wrzutą
-- `delete-content.sh` - Usuń wrzutę
+### Instrukcja obsługi dla debili:
+> NIE WYLOGOWYWUJ SIE Z OBRANEGO KONTA BO PRZEDAWNISZ CIASTKA!!!
+- Wejdź na jbzd.com.pl w nowym oknie `incognito`.
+- Zaloguj się na konto do przetworzenia.
+- Otwórz narzędzia deweloperskie przyciskiem `F12`.
+- Upewnij sie że devtools otwarte jest w zakładce `Network`
+- Upewnij się że nagrywasz requesty *(czerwony przycisk w lewym górnym rogu devtools)*
+- Wciśnij np ikonke dzwonka od powiadomień by wywołać jakiś request.
+- Gdy nowy request sie pojawi, kliknij na niego prawym -> Zapisz -> Zapisz jako cURL.
+- Wklej zapisany w schowku cURL do obieraczki.
+- Nazwij obrany plik w ten sam sposób jak nick konta które obrałeś by wiedzieć co jest czym.
+- Potem zamknij karte/okno, otwórz nowe i proces sie powtarza.
 
-### Extra pierdoły:
-Pobierz losowy obrazek 1000 x 1000px \
-```wget https://picsum.photos/1000```
+### Obieraczka:
+- Możesz odpalić statycznie samemu, np za pomocą [w3schools (Emulator HTML Online)](https://www.w3schools.com/html/tryit.asp?filename=tryhtml_default_default)
+- Lub pobierz [Skrypt](https://raw.githubusercontent.com/serainox420/JBZD-Scripts/refs/heads/personal/HTML/stripper.html), zapisz lokalnie jako .html i odpal w przeglądarce
 
-### JS Snippets:
-> Anti refresh / redirect tab lock.
-```
-window.onbeforeunload = function(event) {
-  event.preventDefault();
-  event.returnValue = 'Are you sure you want to leave?';
-  return 'Are you sure you want to leave?';
-};
-```
-> Basic payload Vue
-```
-{{ alert("UwU") }}
-```
-> Basic payload in-element
-```
-<div v-html="'<script>alert(\"UwU\")<\/script>'"></div>
-```
+![image](https://github.com/user-attachments/assets/3f7d10a3-0471-4c7d-b55a-972b97da5812)
+
+
+> *Głupie problemy wymagają głupich rozwiązań, a oto jedno z nich* ~ sx66
