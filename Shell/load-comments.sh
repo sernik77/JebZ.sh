@@ -183,20 +183,23 @@ if [ "$BILANS" = true ]; then
   
   # Prepare the bilans data
   bilans_data=$(cat <<EOF
+  
+===-=-=-=-=-=-=-=-=-=-=-===
 Date: [$DATE]
-
+- - - - - - - - - - - - - -
 User: [$USERNAME] / [$USER_ID]
 Bilans: [$total_score] / [$Ratio]
-
+- - - - - - - - - - - - - -
 Total Comments: [$TOTAL_COMMENTS]
 Total Plus [+]: [$total_plus]
 Total Minus [-]: [$total_minus]
+===-=-=-=-=-=-=-=-=-=-=-===
 
 EOF
 ) 
 
   # Append the bilans data to the file and display it
-  echo "$bilans_data" | boxes -d parchment | tee -a "$BILANS_OUTPUT_FILE"
+  echo "$bilans_data" | tee -a "$BILANS_OUTPUT_FILE" | boxes -d parchment
   echo -e "\nBilans details appended to $BILANS_OUTPUT_FILE"
 fi
 
