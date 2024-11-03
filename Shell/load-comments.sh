@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # Script to load user comments with optional ID extraction, short output, balance calculation, and comment search.
-# Usage: bash load-comments.sh <config_file> <username_or_profile_url> <pages_to_fetch | "all"> [--id] [--short] [--bilans] [--search <query>]
+# Usage: bash load-comments.sh <config_file> <username_or_profile_url> <pages_to_fetch | "all"> [--id] [--short] [--bilans] [--json] [--search <query>]
 # Options:
 #   --id: Extract only the comment IDs
 #   --short: Save only specific fields to a short JSON file
 #   --bilans: Calculate the total score, plus, and minus values from the short JSON file
+#   --json: Save bilans output in JSON format (only works if --bilans is specified)
 #   --search <query>: Extract all comments matching the search query into a separate JSON file
 
 # Check if jq is installed
@@ -16,8 +17,8 @@ fi
 
 # Check if the user has provided the required arguments
 if [ "$#" -lt 3 ]; then
-  echo "Usage: $0 <config_file> <username_or_profile_url> <pages_to_fetch | 'all'> [--id] [--short] [--bilans] [--search <query>]"
-  echo "Example: $0 config.txt templeos all --id --short --bilans --search example"
+  echo "Usage: $0 <config_file> <username_or_profile_url> <pages_to_fetch | 'all'> [--id] [--short] [--bilans] [--json] [--search <query>]"
+  echo "Example: $0 config.txt templeos all --id --short --bilans --json --search example"
   exit 1
 fi
 
@@ -28,6 +29,7 @@ USERNAME=$(basename "$USERNAME_OR_URL")
 ONLY_IDS=false
 SHORT_OUTPUT=false
 BILANS=false
+JSON_OUTPUT=false
 SEARCH_MODE=false
 SEARCH_QUERY=""
 
@@ -41,6 +43,8 @@ for (( i=4; i<=$#; i++ )); do
   elif [[ "$arg" == "--bilans" ]]; then
     BILANS=true
     SHORT_OUTPUT=true  # Automatically enable --short when --bilans is used
+  elif [[ "$arg" == "--json" ]]; then
+    JSON_OUTPUT=true
   elif [[ "$arg" == "--search" ]]; then
     SEARCH_MODE=true
     ((i++))
@@ -172,35 +176,60 @@ if [ "$SEARCH_MODE" = true ]; then
   echo -e "\nComments matching search query \"$SEARCH_QUERY\" saved to $SEARCH_OUTPUT_FILE"
 fi
 
-
 # Display totals for --bilans
 if [ "$BILANS" = true ]; then
-  BILANS_OUTPUT_FILE="${USERNAME}_bilans.json"
-
-  # Calculate the ratio with printf to ensure correct formatting
-  Ratio=$(printf "%0.3f" "$(echo "scale=3; $total_score / $TOTAL_COMMENTS" | bc)")
   DATE=$(date +"%Y-%m-%d %H:%M")
-  
-  # Prepare the bilans data
-  bilans_data=$(cat <<EOF
-  
+  ratio=$(printf "%0.3f" "$(echo "scale=3; $total_score / $TOTAL_COMMENTS" | bc)")
+
+  # Prepare the bilans entry as a JSON object (used for --json flag)
+  new_entry=$(jq -n --arg date "$DATE" --arg user "$USERNAME" --arg userid "$USER_ID" \
+                    --arg totalscore "$total_score" --arg ratio "$ratio" \
+                    --arg totalplus "$total_plus" --arg totalminus "$total_minus" \
+  '{
+      date: $date,
+      user: $user,
+      user_id: $userid,
+      bilans: {total_score: $totalscore, ratio: $ratio},
+      total_comments: $totalplus,
+      total_plus: $totalplus,
+      total_minus: $totalminus
+  }')
+
+  # JSON output handling when --json flag is present
+  if [ "$JSON_OUTPUT" = true ]; then
+    BILANS_OUTPUT_FILE="${USERNAME}_bilans.json"
+    
+    # If the JSON file already exists, append the new entry; otherwise, create a new array
+    if [ -f "$BILANS_OUTPUT_FILE" ]; then
+      jq '. += [$new_entry]' --argjson new_entry "$new_entry" "$BILANS_OUTPUT_FILE" > "$BILANS_OUTPUT_FILE.tmp" && mv "$BILANS_OUTPUT_FILE.tmp" "$BILANS_OUTPUT_FILE"
+    else
+      echo "[$new_entry]" > "$BILANS_OUTPUT_FILE"
+    fi
+    echo -e "\nBilans entry appended in JSON format to $BILANS_OUTPUT_FILE"
+
+  # Plaintext output handling when only --bilans is used
+  else
+    BILANS_OUTPUT_FILE="${USERNAME}_bilans.txt"
+
+    # Prepare plaintext bilans data
+    bilans_data=$(cat <<EOF
 ===-=-=-=-=-=-=-=-=-=-=-===
 Date: [$DATE]
 - - - - - - - - - - - - - -
 User: [$USERNAME] / [$USER_ID]
-Bilans: [$total_score] / [$Ratio]
+Bilans: [$total_score] / [$ratio]
 - - - - - - - - - - - - - -
 Total Comments: [$TOTAL_COMMENTS]
 Total Plus [+]: [$total_plus]
 Total Minus [-]: [$total_minus]
 ===-=-=-=-=-=-=-=-=-=-=-===
-
 EOF
-) 
+    )
 
-  # Append the bilans data to the file and display it
-  echo "$bilans_data" | tee -a "$BILANS_OUTPUT_FILE" | boxes -d parchment
-  echo -e "\nBilans details appended to $BILANS_OUTPUT_FILE"
+    # Append the bilans data to the text file
+    echo -e "\n$bilans_data\n" | boxes -d parchment | tee -a "$BILANS_OUTPUT_FILE" | boxes -d parchment
+    echo -e "\nBilans details appended to $BILANS_OUTPUT_FILE"
+  fi
 fi
 
 # Cleanup temporary files
