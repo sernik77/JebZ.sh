@@ -72,10 +72,14 @@ if (( abs_total_score_diff >= THRESHOLD_SCORE )) || \
   alert_message="# Alert! - Anomalie na rynku minusów!!!\n\n\
 # User: *$user_new*\n\n\
 [$date_old] / [$date_new] \n\
-## *Score:* [**$total_score_diff**]\
- *Ratio:* [**$ratio_diff**]\n\
-### *Plus:* [**$total_plus_diff**]\
+## DIFF: *Score:* [**$total_score_diff**]\
+ *Ratio:* [**$ratio_diff**]\
+ *Plus:* [**$total_plus_diff**]\
  *Minus:* [**$total_minus_diff**]\n\
+## || CURRENT: *Score:* [**$total_score_new**]\
+ *Ratio:* [**$ratio_new**]\
+ *Plus:* [**$total_plus_new**]\
+ *Minus:* [**$total_minus_new**]||\n\
 URL: https://jbzd.com.pl/uzytkownik/$user_new"
 
   # Send alert to Discord webhook
