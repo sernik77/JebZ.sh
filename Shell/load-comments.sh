@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# bash load-comments.sh config.txt <UID> <pages to fetch> [--id]
-# add [--id] to additionally extract just comment id's
+# Script to load user comments with optional ID extraction or short output.
+# Usage: bash load-comments.sh <config_file> <USER_ID> <pages_to_fetch> [--id] [--short]
+# Options:
+#   --id: Extract only the comment IDs
+#   --short: Save only specific fields to a short JSON file
 
 # Check if jq is installed
 if ! command -v jq &> /dev/null; then
@@ -11,8 +14,8 @@ fi
 
 # Check if the user has provided the required arguments
 if [ "$#" -lt 3 ]; then
-  echo "Usage: $0 <config_file> <USER_ID> <pages_to_fetch> [--id]"
-  echo "Example: $0 config.txt 123 5 --id"
+  echo "Usage: $0 <config_file> <USER_ID> <pages_to_fetch> [--id] [--short]"
+  echo "Example: $0 config.txt 123 5 --id --short"
   exit 1
 fi
 
@@ -21,24 +24,29 @@ USER_ID=$2
 PAGES=$3
 OUTPUT_FILE="${USER_ID}.json"
 ONLY_IDS=false
+SHORT_OUTPUT=false
 
-# Check for optional --id flag
-if [[ "$4" == "--id" ]]; then
-  ONLY_IDS=true
-fi
+# Check for optional flags
+for arg in "$@"; do
+  if [[ "$arg" == "--id" ]]; then
+    ONLY_IDS=true
+  elif [[ "$arg" == "--short" ]]; then
+    SHORT_OUTPUT=true
+  fi
+done
 
 # Load the config file manually and map variables with `-` in the names
 if [ -f "$CONFIG_FILE" ]; then
   COOKIE=$(grep '^COOKIE=' "$CONFIG_FILE" | cut -d'=' -f2-)
-  X-CSRF-TOKEN=$(grep '^X-CSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
-  X-XSRF-TOKEN=$(grep '^X-XSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
+  X_CSRF_TOKEN=$(grep '^X-CSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
+  X_XSRF_TOKEN=$(grep '^X-XSRF-TOKEN=' "$CONFIG_FILE" | cut -d'=' -f2-)
 else
   echo "Config file not found!"
   exit 1
 fi
 
 # Ensure all tokens are set
-if [ -z "$COOKIE" ] || [ -z "$X-CSRF-TOKEN" ] || [ -z "$X-XSRF-TOKEN" ]; then
+if [ -z "$COOKIE" ] || [ -z "$X_CSRF_TOKEN" ] || [ -z "$X_XSRF_TOKEN" ]; then
   echo "Missing token(s) in the config file!"
   exit 1
 fi
@@ -47,8 +55,7 @@ fi
 > "$OUTPUT_FILE"
 
 # Loop through the pages and fetch each one
-for (( PAGE=1; PAGE<=PAGES; PAGE++ ))
-do
+for (( PAGE=1; PAGE<=PAGES; PAGE++ )); do
   echo "Fetching page $PAGE of $PAGES..."
   
   # Perform the curl request for each page and capture the response
@@ -66,16 +73,16 @@ do
     -H 'sec-fetch-site: same-origin' \
     -H 'sec-gpc: 1' \
     -H 'user-agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36' \
-    -H "x-csrf-token: $X-CSRF-TOKEN" \
+    -H "x-csrf-token: $X_CSRF_TOKEN" \
     -H 'x-requested-with: XMLHttpRequest' \
-    -H "x-xsrf-token: $X-XSRF-TOKEN")
+    -H "x-xsrf-token: $X_XSRF_TOKEN")
   
   # Check if the response contains an empty message
   if [[ "$RESPONSE" == *'"message":""'* ]]; then
     echo "Page $PAGE returned an empty response. Stopping."
     break
   else
-    # Append the response to the output file
+    # Append the response to the full output file
     echo "$RESPONSE" | jq . >> "$OUTPUT_FILE"
     echo "Page $PAGE fetched and appended to $OUTPUT_FILE"
   fi
@@ -90,6 +97,14 @@ if [ "$ONLY_IDS" = true ]; then
   sed -E 's/.*\/([0-9]+)"/\1/' >> "$ID_OUTPUT_FILE"
   
   echo "Extracted IDs have been saved to $ID_OUTPUT_FILE"
+fi
+
+# If --short flag is used, filter and save only specified fields to a short JSON file
+if [ "$SHORT_OUTPUT" = true ]; then
+  SHORT_OUTPUT_FILE="${USER_ID}_comments_short.json"
+  jq '.pagination.data | map({id, comment, score, plus, minus, created_at, badge: (.badge // {} | {gold, silver, stone, wyp})})' "$OUTPUT_FILE" > "$SHORT_OUTPUT_FILE"
+  
+  echo "Short output saved, retaining only specific fields in $SHORT_OUTPUT_FILE"
 fi
 
 echo "All pages fetched and saved to $OUTPUT_FILE."
