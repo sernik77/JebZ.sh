@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# Script to load user comments with optional ID extraction, short output, and balance calculation.
-# Usage: bash load-comments.sh <config_file> <username_or_profile_url> <pages_to_fetch | "all"> [--id] [--short] [--bilans]
+# Script to load user comments with optional ID extraction, short output, balance calculation, and comment search.
+# Usage: bash load-comments.sh <config_file> <username_or_profile_url> <pages_to_fetch | "all"> [--id] [--short] [--bilans] [--search <query>]
 # Options:
 #   --id: Extract only the comment IDs
 #   --short: Save only specific fields to a short JSON file
 #   --bilans: Calculate the total score, plus, and minus values from the short JSON file
+#   --search <query>: Extract all comments matching the search query into a separate JSON file
 
 # Check if jq is installed
 if ! command -v jq &> /dev/null; then
@@ -15,20 +16,24 @@ fi
 
 # Check if the user has provided the required arguments
 if [ "$#" -lt 3 ]; then
-  echo "Usage: $0 <config_file> <username_or_profile_url> <pages_to_fetch | 'all'> [--id] [--short] [--bilans]"
-  echo "Example: $0 config.txt templeos all --id --short --bilans"
+  echo "Usage: $0 <config_file> <username_or_profile_url> <pages_to_fetch | 'all'> [--id] [--short] [--bilans] [--search <query>]"
+  echo "Example: $0 config.txt templeos all --id --short --bilans --search example"
   exit 1
 fi
 
 CONFIG_FILE=$1
 USERNAME_OR_URL=$2
 PAGES=$3
+USERNAME=$(basename "$USERNAME_OR_URL")
 ONLY_IDS=false
 SHORT_OUTPUT=false
 BILANS=false
+SEARCH_MODE=false
+SEARCH_QUERY=""
 
 # Check for optional flags
-for arg in "$@"; do
+for (( i=4; i<=$#; i++ )); do
+  arg="${!i}"
   if [[ "$arg" == "--id" ]]; then
     ONLY_IDS=true
   elif [[ "$arg" == "--short" ]]; then
@@ -36,6 +41,11 @@ for arg in "$@"; do
   elif [[ "$arg" == "--bilans" ]]; then
     BILANS=true
     SHORT_OUTPUT=true  # Automatically enable --short when --bilans is used
+  elif [[ "$arg" == "--search" ]]; then
+    SEARCH_MODE=true
+    ((i++))
+    SEARCH_QUERY="${!i}"
+    SHORT_OUTPUT=true  # Automatically enable --short when --search is used
   fi
 done
 
@@ -129,8 +139,8 @@ for (( PAGE=1; PAGE<=PAGES; PAGE++ )); do
 done
 
 # Combine all page data if --short flag is used
+SHORT_OUTPUT_FILE="${USERNAME}_comments_short.json"
 if [ "$SHORT_OUTPUT" = true ]; then
-  SHORT_OUTPUT_FILE="${USER_ID}_comments_short.json"
   jq -s '[.[][]]' "$temp_dir"/page_*.json | jq '{
       comments: [.[] | 
         {id, 
@@ -142,28 +152,53 @@ if [ "$SHORT_OUTPUT" = true ]; then
          badge: (.badge // {} | {gold, silver, stone, wyp})
         }]
     }' > "$SHORT_OUTPUT_FILE"
-    echo -e "\nComplete!\n"
-  echo "Short log saved to: $SHORT_OUTPUT_FILE" # clear
+    cat "$SHORT_OUTPUT_FILE"
+  echo "Short output saved to $SHORT_OUTPUT_FILE"
+  
 fi
 
 # If --id flag is used, extract the comment IDs from "commentable_url"
 if [ "$ONLY_IDS" = true ]; then
-  ID_OUTPUT_FILE="${USER_ID}_ids.txt"
+  ID_OUTPUT_FILE="${USERNAME}_ids.txt"
   jq -s '.[][] | .commentable_url | capture("/(?<id>[0-9]+)$").id' "$temp_dir"/page_*.json > "$ID_OUTPUT_FILE"
-  echo -e "\nID log saved to: $ID_OUTPUT_FILE\n"
+  echo -e "\nComment IDs saved to $ID_OUTPUT_FILE"
 fi
+
+# Perform search and save matching comments if --search flag is used
+if [ "$SEARCH_MODE" = true ]; then
+  SEARCH_OUTPUT_FILE="${USERNAME}_search_${SEARCH_QUERY}.json"
+  jq --arg query "$SEARCH_QUERY" '[.comments[] | select(.comment | test($query; "i"))]' "$SHORT_OUTPUT_FILE" > "$SEARCH_OUTPUT_FILE"
+  cat "$SEARCH_OUTPUT_FILE"
+  echo -e "\nComments matching search query \"$SEARCH_QUERY\" saved to $SEARCH_OUTPUT_FILE"
+fi
+
 
 # Display totals for --bilans
 if [ "$BILANS" = true ]; then
-  Ratio=$(echo "scale=3; $total_score / $TOTAL_COMMENTS" | bc)
-  echo -e "\nUser: $USERNAME_OR_URL" 
-  echo -e "UID: $USER_ID \n"
-  echo "Bilans: $total_score" 
-  printf "Ratio: [%0.3f]\n" "$Ratio"
-  echo -e "Total Comments: $TOTAL_COMMENTS\n"
-  echo "Total Plus [+]: $total_plus"
-  echo "Total Minus [-]: $total_minus"
-fi | boxes -d parchment
+  BILANS_OUTPUT_FILE="${USERNAME}_bilans.json"
+
+  # Calculate the ratio with printf to ensure correct formatting
+  Ratio=$(printf "%0.3f" "$(echo "scale=3; $total_score / $TOTAL_COMMENTS" | bc)")
+  DATE=$(date +"%Y-%m-%d %H:%M")
+  
+  # Prepare the bilans data
+  bilans_data=$(cat <<EOF
+Date: [$DATE]
+
+User: [$USERNAME] / [$USER_ID]
+Bilans: [$total_score] / [$Ratio]
+
+Total Comments: [$TOTAL_COMMENTS]
+Total Plus [+]: [$total_plus]
+Total Minus [-]: [$total_minus]
+
+EOF
+) 
+
+  # Append the bilans data to the file and display it
+  echo "$bilans_data" | boxes -d parchment | tee -a "$BILANS_OUTPUT_FILE"
+  echo -e "\nBilans details appended to $BILANS_OUTPUT_FILE"
+fi
 
 # Cleanup temporary files
 rm -rf "$temp_dir"
