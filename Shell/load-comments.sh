@@ -102,7 +102,16 @@ fi
 # If --short flag is used, filter and save only specified fields to a short JSON file
 if [ "$SHORT_OUTPUT" = true ]; then
   SHORT_OUTPUT_FILE="${USER_ID}_comments_short.json"
-  jq '.pagination.data | map({id, comment, score, plus, minus, created_at, badge: (.badge // {} | {gold, silver, stone, wyp})})' "$OUTPUT_FILE" > "$SHORT_OUTPUT_FILE"
+  jq '{comments: [.pagination.data[] | 
+      {id, 
+       comment, 
+       score, 
+       plus, 
+       minus, 
+       created_at, 
+       badge: (.badge // {} | {gold, silver, stone, wyp})
+      }]
+    }' "$OUTPUT_FILE" > "$SHORT_OUTPUT_FILE"
   
   echo "Short output saved, retaining only specific fields in $SHORT_OUTPUT_FILE"
 fi
