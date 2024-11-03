@@ -1,23 +1,25 @@
 #!/bin/bash
 
-# Dzid-RADAR
-# Compare two most recent _bilans.json logs to monitor +/- ratio changes for specified users and send alerts via discord webhook
-
 # Path to your JSON log file
 LOG_FILE=$1
 
 if [ "$#" -lt 1 ]; then
-  echo "Usage: $0 <bilans.json>"
+  echo "Usage: $0 <x_bilans.json>"
   exit 1
 fi
 
-# Webhook
-WEBHOOK_URL="<DISCORD-WEBHOOK-URL>"
+# Discord Webhook URL
+WEBHOOK_URL="<URL>"
 
-# Thresholds for alerts
+# Thresholds for alerts (both positive and negative)
 THRESHOLD_SCORE=50
 THRESHOLD_PLUS=50
 THRESHOLD_MINUS=50
+
+# Function to get absolute value
+abs() {
+  (( $1 < 0 )) && echo $(( -$1 )) || echo $1
+}
 
 # Parse the two most recent entries from the JSON log file
 recent_logs=$(jq 'sort_by(.date) | reverse | .[:2]' "$LOG_FILE")
@@ -49,6 +51,11 @@ ratio_diff=$(echo "$ratio_new - $ratio_old" | bc)
 total_plus_diff=$((total_plus_new - total_plus_old))
 total_minus_diff=$((total_minus_new - total_minus_old))
 
+# Get absolute differences
+abs_total_score_diff=$(abs "$total_score_diff")
+abs_total_plus_diff=$(abs "$total_plus_diff")
+abs_total_minus_diff=$(abs "$total_minus_diff")
+
 # Display results
 echo "Comparing the two most recent logs:"
 echo "Date difference: $date_old -> $date_new"
@@ -57,8 +64,10 @@ echo "Ratio difference: $ratio_diff"
 echo "Total Plus difference: $total_plus_diff"
 echo "Total Minus difference: $total_minus_diff"
 
-# Check if any differences exceed the threshold
-if (( total_score_diff > THRESHOLD_SCORE )) || (( total_plus_diff > THRESHOLD_PLUS )) || (( total_minus_diff > THRESHOLD_MINUS )); then
+# Check if any absolute differences exceed the thresholds
+if (( abs_total_score_diff >= THRESHOLD_SCORE )) || \
+   (( abs_total_plus_diff >= THRESHOLD_PLUS )) || \
+   (( abs_total_minus_diff >= THRESHOLD_MINUS )); then
   # Construct the formatted alert message
   alert_message="# Alert! - Anomalie na rynku minusów!!!\n\n\
 # User: *$user_new*\n\n\
