@@ -25,3 +25,4 @@
 - `read-notifications.sh` - Zapisz treść powiadomień
 - `vote-content.sh` - Daj plus pod wrzutą
 - `delete-content.sh` - Usuń wrzutę
+- `radar.sh` - Monitor + alert dla bilansu uzytkownika (`<nick>_bilans.json`)
