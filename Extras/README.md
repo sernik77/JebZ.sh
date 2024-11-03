@@ -23,3 +23,11 @@ window.onbeforeunload = function(event) {
 ```
 <div v-html="'<script>alert(\"UwU\")<\/script>'"></div>
 ```
+
+
+
+
+
+
+# Alternatywne kryptonimy projektu xDDD
+> DUPA - Dzidowy Uniwersalny Pakiet Automatyzacji
