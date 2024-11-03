@@ -1,4 +1,4 @@
-# JBZD-Scripts
+# DUPA - Dzidowy Uniwersalny Pakiet Automatyzacji
 > Różne skrypty i programy do interakcji ze stroną jbzd.com.pl
 
 ### Zawartość:
