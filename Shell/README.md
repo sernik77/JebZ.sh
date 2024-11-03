@@ -24,6 +24,7 @@
 - `save-conversation.sh` - Zapisz prywatną konwersację
 - `read-notifications.sh` - Zapisz treść powiadomień
 - `vote-content.sh` - Daj plus pod wrzutą
+- `delete-content.sh` - Usuń wrzutę
 
 ### Extra pierdoły:
 Pobierz losowy obrazek 1000 x 1000px \
