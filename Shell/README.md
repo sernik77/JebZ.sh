@@ -26,3 +26,5 @@
 - `vote-content.sh` - Daj plus pod wrzutą
 - `delete-content.sh` - Usuń wrzutę
 - `radar.sh` - Monitor + alert dla bilansu uzytkownika (`<nick>_bilans.json`)
+- `load-folders.sh` - Wczytaj ulubione foldery
+- `create-folder.sh` Stwórz nowy folder w ulubionych
