@@ -30,20 +30,16 @@ window.onbeforeunload = function(event) {
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
   const cookies = document.cookie;
 
-if (!csrfToken) {
-  throw new Error("Could not retrieve CSRF token.");
-}
-
 // headers
-          headers: {
-            "accept": "application/json",
-            "x-csrf-token": csrfToken,
-            "x-xsrf-token": cookies,
-            "X-Requested-With": "XMLHttpRequest",
-            "cache-control": "no-cache",
-            "pragma": "no-cache",
-            "credentials": "include"
-          }
+headers: {
+  "accept": "application/json",
+  "x-csrf-token": csrfToken,
+  "x-xsrf-token": cookies,
+  "X-Requested-With": "XMLHttpRequest",
+  "cache-control": "no-cache",
+  "pragma": "no-cache",
+  "credentials": "include"
+}
 ```
 \
 \
