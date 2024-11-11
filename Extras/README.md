@@ -41,6 +41,37 @@ headers: {
   "credentials": "include"
 }
 ```
+
+### [CORS 101](https://medium.com/@cybersphere/fetch-api-the-ultimate-guide-to-cors-and-no-cors-cbcef88d371e)
+> CORS
+```js
+// CORS
+fetch('https://example.com/api/data', {
+  mode:  'cors' 
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    key1: 'value1',
+    key2: 'value2'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error(error));
+```
+
+> NO CORS
+```js
+// NO CORS
+fetch('https://example.com/api/data', {
+  mode: 'no-cors'
+})
+  .then(response => console.log(response))
+  .catch(error => console.error(error));
+```
+
 \
 \
 \
