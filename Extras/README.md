@@ -1,5 +1,10 @@
 ### Extra pierdoły:
 
+## Linki:
+- https://brutelogic.com.br/blog/file-upload-xss/
+- https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
+
+
 ### Snippets:
 Pobierz losowy obrazek 1000 x 1000px \
 ```wget https://picsum.photos/1000```
@@ -187,20 +192,6 @@ GIF89a/*<svg/onload=alert(1)>*/=alert(document.domain)//;
 \u003c
 \u003C
 ```
-
-# Docs
-- https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
-
-
-
-\
-\
-\
-\
-\
-\
-.
-
 
 **Alternatywne kryptonimy projektu xDDD**
 > DUPA - Dzidowy Uniwersalny Pakiet Automatyzacji
