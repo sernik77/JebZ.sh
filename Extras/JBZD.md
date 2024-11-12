@@ -41,4 +41,7 @@ Sanityzacja całego komentarza???
 @[XYZ]
 @op
 
+// Dziwna sanityzacja mikrobloga zamnienia:
+@[<] = @[lt]
+@[>] = @[gt]
 ```
