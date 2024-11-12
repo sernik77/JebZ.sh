@@ -5,6 +5,8 @@
 - https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
 - https://github.com/fakhrizulkifli/Defeating-PHP-GD-imagecreatefromgif
 - https://brutelogic.com.br/blog/leveraging-self-xss/
+- https://jira.atlassian.com/browse/JRASERVER-72115?src=confmacro
+- https://asecurityteam.bitbucket.io/cvss_v3/#CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N
 
 ### Snippets:
 Pobierz losowy obrazek 1000 x 1000px \
