@@ -1,0 +1,1 @@
+# Różnego rodzaju skrypty okołodzidowe
