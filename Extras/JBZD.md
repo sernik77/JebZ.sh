@@ -9,9 +9,8 @@
 - `@[{{]`, `@[}}]` jest na mikro sanityzowany po edycji, a na dzidce nie
 - Na mikro można zformatować oznaczenie np ```**__@[op]__**``` i dalej działa
 - Oznaczenie kogoś na mikro przez `@[nick]` tworzy odnośnik do jego profilu na mikroblogu.
-- 
+- Dzida korzysta częściowo z BBCode, Markup i CSS do formatowania
  
-
 ## Pytania za 100 punktów
 - Czy da się podmienić zawartość strony już po zembedowaniu bez tracenia embeda?
 - Gdzie uda wepchać się xss.svg zamiast obrazka?
@@ -19,11 +18,9 @@
 - Czy jeśli złapie sie trakcji, to pojade jak tramwaj?
 - Czy da sie przemycić XSS gifem na mikro? (exif)
 - Czy da sie wrzucić 9999 super zamulających gifów 1x1px do jednego posta na mikro i wysadzić dzide?
-- Czy da sie wrzucić .webm?
+- Czy da sie wrzucić śmieszny .webm?
+- Jakie jeszcze formatowanie dzidka obsługuje i gdzie?
 
-
-
-  
 Embedowanie linków w komentarzach jako "użytkownika"
 ```
 @[http://szmelc.com]
