@@ -6,7 +6,9 @@
 `[image hash=695f9f0c-73d3-48c4-927b-543f9be80679]`, co ciekawe hash można modyfikować bez naruszania obrazka
 - Dodanie obrazka jako hash na mikro wielokrotnie, dodaje obrazek wielokrotnie. (hash określa pozycje obrazka, np hash w cudzysłowiu, będzie obrazkiem cytowanym)
 - Ankiety na mikro się nie sanityzują
-- `@[{{]`, `@[}}]` jest na mikro sanityzowany po edycji, a na dzidce nie 
+- `@[{{]`, `@[}}]` jest na mikro sanityzowany po edycji, a na dzidce nie
+- Na mikro można zformatować oznaczenie np ```**__@[op]__**``` i dalej działa
+ 
 
 ### Pytania za 100 punktów
 - Czy da się podmienić zawartość strony już po zembedowaniu bez tracenia embeda?
