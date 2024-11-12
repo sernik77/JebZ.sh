@@ -3,7 +3,8 @@
 ## Linki:
 - https://brutelogic.com.br/blog/file-upload-xss/
 - https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
-
+- https://github.com/fakhrizulkifli/Defeating-PHP-GD-imagecreatefromgif
+- https://brutelogic.com.br/blog/leveraging-self-xss/
 
 ### Snippets:
 Pobierz losowy obrazek 1000 x 1000px \
