@@ -10,6 +10,9 @@
 Pobierz losowy obrazek 1000 x 1000px \
 ```wget https://picsum.photos/1000```
 
+Szybki test embeda svg
+```https://brutelogic.com.br/poc.svg```
+
 =========
 
 ### JS Snippets:
