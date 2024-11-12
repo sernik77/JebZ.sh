@@ -8,9 +8,7 @@
 - https://jira.atlassian.com/browse/JRASERVER-72115?src=confmacro
 - https://asecurityteam.bitbucket.io/cvss_v3/#CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:L/A:N
 - https://security.snyk.io/vuln/SNYK-JS-SIMPLEMARKDOWN-173788
-
-
-
+- https://www.rcesecurity.com/2015/09/cve-2015-5956-bypassing-the-typo3-core-xss-filter/
 
 ### Snippets:
 Pobierz losowy obrazek 1000 x 1000px \
