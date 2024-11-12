@@ -1,0 +1,63 @@
+# Sernikowe aliasy
+
+- CORSarz
+- DOMinator
+- L00singSanity
+- SigTERM
+- SvgXML
+- RetireJS
+- XploiT
+- CVE-2137
+- T-Error
+- Optimus Crime
+- SynTax
+- SynthesizerAttaX
+- JebZeSkrypta
+- JebZWirucha
+- Curl
+- Wget
+- EtcShadow
+- InitramFS
+- Grub2
+- Bootloader
+- Kernel Panic
+- THP (PHT od tyłu :3)
+- NaChujSieGapiszPizdo (konto dla admina by mógł je zbanować osobiście xD)
+- Overreacting.JS
+- Metasploit Framework
+- AvastAntivirus
+- UwU-Alert
+- wyloguj
+- ustawienia
+- Https
+- 127.0.0.1
+- ExitGate
+- TorNode
+- ReverseShell
+- Netcat
+- GrepDesAwk
+- POSIX
+- Error420
+- Err404
+- catEOF
+- Pipe
+- Pipewire
+- Gnome
+- Stallman
+- RichardStallman
+- Bl4dERuNn3R
+- B0TN3T
+- PuppetMaster
+- Shredding4Satan
+- ShreddingForSatan
+- OgienKurwaJebacZydow
+- EisenBergen
+- AufderHeideBluht EinKleinesBlumelein UndDasHeistErika  [Combo x3]
+- KtoBanujeTenPedal
+- NoszeSkrypciosze
+- WtyczkarzPRIME
+- DuschToster / Strasse / INC
+- DuschTosterPRIME
+- BathToaster - [INC/PRIME/GANG/CRU/SQUAD]
+- ATAT2137
+- 
