@@ -109,6 +109,11 @@ fetch('https://example.com/api/data', {
 a href="/Share?content_type=1&title=<%=Encode.forHtmlAttribute(untrusted content title)%>">Share</a>
 ```
 
+> "Gif" XSS
+```js
+GIF89a/*<svg/onload=alert(1)>*/=alert(document.domain)//;
+```
+
 ### Character Escape Sequence
 ```js
 <
