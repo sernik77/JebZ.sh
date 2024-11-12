@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>projekt winda</title>
+<meta charset="utf-8" />
+<style type="text/css">
+	*
+	{
+		box-sizing: border-box;
+		background: rgba(0,0,0,0);
+		margin: 0;
+		padding: 0;
+	}
+	body
+	{
+		background: black;
+	}
+	.windyStale
+	{
+		position: fixed;
+		top: 0.5vw;
+		height: 60vw;
+		width: 22vw;
+	}
+	.pietra
+	{
+		position: absolute;
+		top:2vw;
+		left: 22.5vw;
+		width: 74vw;
+		min-height: 60vw;
+	}
+	.windyRuchome
+	{
+		position: absolute;
+		top:2vw;
+		left: 25vw;
+		width: 74vw;
+		min-height: 60vw;
+	}
+	.pietro
+	{
+		position: relative;
+		height: 40vw;
+		width: 74vw;
+	}
+	.drzwi
+	{
+		position: relative;
+		float: left;
+		height: 40vw;
+		width: 37vw;
+		background: rgba(0,0,0,0);
+	}
+	.dekoracje
+	{
+		position: absolute;
+		height: 40vw;
+		width: 74vw;
+		background: rgba(0,0,0,0)
+	}
+	.skrzydlo
+	{
+		position: absolute;
+		width: 7vw;
+		height: 24vw;
+		background: rgba(0,0,0,0);
+		transition: 3s;
+	}
+	.rama
+	{
+		position: absolute;
+		top: 13.2vw;
+		width: 15.5vw;
+		height: 25.2vw;
+		background: rgba(0,0,0,0);
+		border: solid 1vw #1B150E;
+		border-bottom: solid 0.7vw black;
+	}
+	.szyb
+	{
+		position: absolute;
+		width:16vw;
+		min-height: 360vw;
+		top:10.5vw;
+	}
+	.windaRuchoma
+	{
+		position: absolute;
+		width: 16vw;
+		height: 32.5vw;
+		background: #6B2F00;
+		border-top: solid 5vw #4D4D4D;
+		border-bottom: solid 5vw #2F2F2F;
+		transition: 5s;
+		box-shadow: 0 0vw 17vw #F7D993;
+	}
+	.windaStala
+	{
+		position: relative;
+		margin: 2vw;
+		width: 16vw;
+		height: 28vw;
+		border: solid 1vw #391B00;
+		background: #6B2F00;
+	}
+	.linka
+	{
+		position: absolute;
+		top: 0;
+		width: 0.5vw;
+		background: #1B1B1B;
+		transition: 5s;
+	}
+	.numerPietra
+	{
+		position: absolute;
+		top:4vw;
+		left: 34vw;
+		width: 6vw;
+		font-weight: 900;
+		font-size: 7vw;
+		text-align: center;
+		color: #1B150E;
+	}
+	.numerekGuzika
+	{
+		position: relative;
+		float: right;
+		width: 4.5vw;
+		height: 3vw;
+		font-weight: 700;
+		font-size: 2vw;
+		color: #1B150E;
+	}
+	.guzikiPietro
+	{
+		position: absolute;
+		top:21vw;
+		left: 35vw;
+		width: 4vw;
+		height: 7vw;
+		background: #39342F;
+		border-radius: 10%;
+	}
+	.guzikiWinda
+	{
+		position: absolute;
+		padding: 0.5vw;
+		top: 7vw;
+		left: 0.7vw;
+		width: 10.1vw;
+		height: 15vw;
+		background: #39342F;
+		border-radius: 1vw;
+	}
+	.guzikNieaktywny
+	{
+		position: absolute;
+		width: 2vw;
+		height: 2vw;
+		border-radius: 50%;
+		border: solid 0.5vw #251B11;
+		background: black;
+		box-shadow: 0 0 2vw rgba(0,0,0,0);
+		transition: 0.7s;
+	}
+	.guzikPusty
+	{
+		position: absolute;
+		width: 2vw;
+		height: 2vw;
+		border-radius: 50%;
+		border: solid 0.7vw #251B11;
+	}
+	.guzikAktywny
+	{
+		position: absolute;
+		width: 2vw;
+		height: 2vw;
+		border-radius: 50%;
+		border: solid 0.5vw #251B11;
+		background: #F7B12F;
+		box-shadow: 0 0 2vw #F7B12F;
+		transition: 0.7s;
+	}
+	.swiatlo
+	{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		box-shadow: inset 0 7vw 10vw #F7D993;
+		transition: 0.1s;
+	}
+</style>
+<script src="winda_logika.js"></script>
+<script type="text/javascript">
+	const q={winda:[],pietro:{},zajetosc:[false,false],metody:{}}
+	function start()
+	{
+		for (let a=0 ; a<9 ; a++)
+		{
+			stworzPietro(7-a)
+			q.pietro[`${7-a}`]={}
+			q.pietro[`${7-a}`].czyWinda=false
+			q.pietro[`${7-a}`].czyCelWindy=false
+			if (a==7)
+			{
+				q.pietro[`${7-a}`].czyWinda=true
+			}
+			q.pietro[`${7-a}`].numer=`${7-a}`
+			q.pietro[`${7-a}`].guziki=[]
+			q.pietro[`${7-a}`].guziki[0]={}
+			q.pietro[`${7-a}`].guziki[0].aktywny=false
+			q.pietro[`${7-a}`].guziki[0].podswietl = new Function(`document.getElementsByClassName("guzikiPietro")[${a}].children[0].className="guzikAktywny";q.pietro[${7-a}].guziki[0].aktywny=true`)
+			q.pietro[`${7-a}`].guziki[0].zgas = new Function(`document.getElementsByClassName("guzikiPietro")[${a}].children[0].className="guzikNieaktywny";q.pietro[${7-a}].guziki[0].aktywny=false`)
+			if (7-a==0)
+			{
+				q.pietro[`${7-a}`].guziki[1]={}
+				q.pietro[`${7-a}`].guziki[1].aktywny=false
+				q.pietro[`${7-a}`].guziki[1].podswietl = new Function(`document.getElementsByClassName("guzikiPietro")[${a}].children[1].className="guzikAktywny";q.pietro[${7-a}].guziki[1].aktywny=true`)
+				q.pietro[`${7-a}`].guziki[1].zgas = new Function(`document.getElementsByClassName("guzikiPietro")[${a}].children[1].className="guzikNieaktywny";q.pietro[${7-a}].guziki[1].aktywny=false`)
+			}
+			q.pietro[`${7-a}`].drzwi=[]
+			for (let b=0 ; b<2 ; b++)
+			{
+				q.pietro[`${7-a}`].drzwi[b]={}
+				q.pietro[`${7-a}`].drzwi[b].otwarte=false
+				q.pietro[`${7-a}`].drzwi[b].otworz = new Function(`const d=document.getElementById("piętro ${7-a} przedział ${b+1}").children;for(let a=0;a<2;a++){setTimeout(()=>{d[a].style[["left","right"][a]]="5vw"},(Math.random()*500)+1)};setTimeout(()=>{q.pietro["${7-a}"].drzwi[${b}].otwarte=true},700)`)
+				q.pietro[`${7-a}`].drzwi[b].zamknij = new Function(`const d=document.getElementById("piętro ${7-a} przedział ${b+1}").children;for(let a=0;a<2;a++){setTimeout(()=>{d[a].style[["left","right"][a]]="11.4vw"},(Math.random()*500)+1)};setTimeout(()=>{q.pietro["${7-a}"].drzwi[${b}].otwarte=false},700)`)
+			}
+
+		}
+		for (let a=0 ; a<2 ; a++)
+		{
+			stworzWinde(a)
+			q.winda[a]={}
+			q.winda[a].nr=a+1
+			q.winda[a].czasPostoju=0
+			q.winda[a].minimalnyCzasPostoju=3
+			q.winda[a].wolna=true
+			q.winda[a].ruch=false
+			q.winda[a].kierunek=0
+			q.winda[a].polozenie=0
+			q.winda[a].cel=0
+			q.winda[a].kolejka=[]
+			q.winda[a].jedzDo = new Function(`pietro`,`if(pietro>7||pietro<-1){return alert("nie można wysłać windy na piętro "+pietro)};q.pietro[q.winda[${a}].polozenie+""].czyCelWindy=false;q.winda[${a}].cel=pietro||0`)
+			q.winda[a].mojePietro = new Function(`return q.pietro[""+q.winda[${a}].polozenie]`)
+			q.winda[a].sasiednia = new Function(`return q.winda[${Math.abs(a-1)}]`)
+			q.winda[a].zgasGuzikPietra = new Function(`pietro`,`if(pietro==0){pietro=7}else{pietro=7-(pietro||77)};if(!(pietro>=-1&&pietro<=8)){return alert("metoda windy zgasGuzikPietra potrzebuje argumentu numery piętra o wartości od -1 do 7")}q.winda[${a}].guziki[pietro].zgas()`)
+			q.winda[a].podswietlGuzikPietra = new Function(`pietro`,`if(pietro==0){pietro=7}else{pietro=7-(pietro||77)};if(!(pietro>=-1&&pietro<=8)){return alert("metoda windy podswietlGuzikPietra potrzebuje argumentu numery piętra o wartości od -1 do 7")}q.winda[${a}].guziki[pietro].podswietl()`)
+			q.winda[a].guziki=[]
+			for (let b=0 ; b<9 ; b++)
+			{
+				q.winda[a].guziki[b]={}
+				q.winda[a].guziki[b].aktywny=false
+				q.winda[a].guziki[b].opis=7-b
+				q.winda[a].guziki[b].podswietl = new Function(`const g=document.getElementsByClassName("windaStala")[${a}].children[0].children[${b}].children[0];g.className="guzikAktywny";q.winda[${a}].guziki[${b}].aktywny=true`)
+				q.winda[a].guziki[b].zgas = new Function(`const g=document.getElementsByClassName("windaStala")[${a}].children[0].children[${b}].children[0];g.className="guzikNieaktywny";q.winda[${a}].guziki[${b}].aktywny=false`)
+				q.winda[a].guziki[b].mojePietro = new Function(`return q.pietro["${7-b}"]`)
+			}
+		}
+		function stworzPietro(nr)
+		{
+			const pietro=document.createElement("div")
+			pietro.className="pietro"
+			pietro.appendChild(stworzDrzwi(`piętro ${nr} przedział 1`))
+			pietro.appendChild(stworzDrzwi(`piętro ${nr} przedział 2`))
+			pietro.appendChild(stworzDekoracje())
+			pietro.appendChild(dodajGuziki())
+			document.getElementsByClassName("pietra")[0].appendChild(pietro)
+			function stworzDrzwi(oznaczenie)
+			{
+				const przedzialDrzwi=document.createElement("div")
+				przedzialDrzwi.className="drzwi"
+				for (let a=0 ; a<2 ; a++)
+				{
+					const skrzydlo=document.createElement("div")
+					skrzydlo.className="skrzydlo"
+					skrzydlo.style.top="14vw"
+					skrzydlo.style[["left","right"][a]]=`11.4vw`
+					const dekoracje=document.getElementsByTagName("template")[0].innerHTML
+					skrzydlo.innerHTML=dekoracje
+					przedzialDrzwi.appendChild(skrzydlo)
+				}
+				przedzialDrzwi.id=oznaczenie
+				return przedzialDrzwi
+			}
+			function stworzDekoracje()
+			{
+				const dekoracje=document.createElement("div")
+				dekoracje.className="dekoracje"
+				dekoracje.innerHTML=document.getElementsByTagName("template")[1].innerHTML
+				const numerPietra=document.createElement("div")
+				numerPietra.className="numerPietra"
+				numerPietra.innerHTML=nr
+				dekoracje.appendChild(numerPietra)
+				return dekoracje
+			}
+			function dodajGuziki()
+			{
+				const guzikiPietro=document.createElement("div")
+				guzikiPietro.className="guzikiPietro"
+				for (let a=0 ; a<2 ; a++)
+				{
+					const guzik=document.createElement("div")
+					guzik.className="guzikPusty"
+					guzik.style.left="1vw"
+					guzik.style.top=`${[1.1,4.1][a]}vw`
+					if (a==0 || nr==0)
+					{
+						guzik.className="guzikNieaktywny"
+						guzik.onclick = new Function(`q.reakcjaGuzik("p",${a},${nr})`)
+					}
+					guzikiPietro.appendChild(guzik)
+				}
+				return guzikiPietro
+			}
+		}
+		function stworzWinde(nr)
+		{
+			const winda=document.createElement("div")
+			winda.className="windaStala"
+			let guzikiWinda=document.createElement("div")
+			guzikiWinda.className="guzikiWinda"
+			for (let a=0 ; a<9 ; a++)
+			{
+				const numerekGuzika=document.createElement("div")
+				numerekGuzika.className="numerekGuzika"
+				const guzik=document.createElement("div")
+				guzik.className="guzikNieaktywny"
+				guzik.style.right="0.5vw"
+				numerekGuzika.appendChild(guzik)
+				const opis=document.createElement("div")
+				opis.style.position="absolute"
+				opis.style.right="3vw"
+				opis.innerHTML=7-a
+				numerekGuzika.appendChild(opis)
+				guzikiWinda.appendChild(numerekGuzika)
+			}
+			winda.appendChild(guzikiWinda)
+			const swiatlo=document.createElement("div")
+			swiatlo.className="swiatlo"
+			winda.appendChild(swiatlo)
+			guzikiWinda=document.createElement("div")
+			guzikiWinda.className="guzikiWinda"
+			guzikiWinda.style.opacity=0
+			for (let a=0 ; a<9 ; a++)
+			{
+				const numerekGuzika=document.createElement("div")
+				numerekGuzika.className="numerekGuzika"
+				const guzik=document.createElement("div")
+				guzik.className="guzikNieaktywny"
+				guzik.onclick = new Function(`q.reakcjaGuzik("w",${a},${nr})`)
+				guzik.style.right="0.5vw"
+				numerekGuzika.appendChild(guzik)
+				const opis=document.createElement("div")
+				opis.style.position="absolute"
+				opis.style.right="3vw"
+				opis.innerHTML=7-a
+				numerekGuzika.appendChild(opis)
+				guzikiWinda.appendChild(numerekGuzika)
+			}
+			winda.appendChild(guzikiWinda)
+			document.body.children[0].appendChild(winda)
+		}
+		q.reakcjaGuzik=function(m,nrG,nrM)
+		{
+			if (m=="w")
+			{
+				const winda=q.winda[nrM]
+				const guzik=winda.guziki[nrG]
+				reakcjaNaGuzikWwindzie(guzik,winda,q.metody)
+			}
+			else if(m=="p")
+			{
+				const pietro=q.pietro[`${nrM}`]
+				const guzik=pietro.guziki[nrG]
+				reakcjaNaGuzikNaPietrze(guzik,pietro,q.metody)
+			}
+		}
+		q.przesunWinde=function(winda,kierunek)
+		{
+			if (!(winda==0 || winda==1)){return}
+			if(q.zajetosc[winda]){return}
+			if (!(kierunek==-1 || kierunek==1)){return}
+			q.zajetosc[winda]=true
+			let h=(7-q.winda[winda].polozenie)+(kierunek*-1)
+			if (h<0 || h>8){return}
+			h=h*40
+			document.getElementsByClassName("windaRuchoma")[winda].style.top=`${h}vw`
+			const linki=document.getElementsByClassName("szyb")[winda].children
+			for (let a=0 ; a<4 ; a++)
+			{
+				linki[a].style.height=([(h+15),(h+15),347,347][a])+"vw"
+				linki[a].style.left=[[3,4,5],[12,13,14],[7,8,9],[10,11,12]][a][Math.floor(Math.random()*3)]+"vw"
+			}
+			setTimeout(()=>{q.winda[winda].polozenie+=kierunek;q.zajetosc[winda]=false},2000)
+		}
+		q.cykliczna=function(nr)
+		{
+			nr=nr||0
+			const winda=q.winda[nr]
+			if (winda.ruch && winda.kierunek)
+			{
+				winda.wolna=false
+				winda.czasPostoju=0
+				if (winda.polozenie==winda.cel)
+				{
+					winda.ruch=false
+					winda.kierunek=0
+					winda.wolna=true
+					q.pietro[`${winda.polozenie}`].czyWinda=true
+					setTimeout(new Function(`reakcjaNaPrzyjazdWindy(q.winda[${nr}],q.pietro["${winda.cel}"],q.metody)`),2000)
+				}
+				else if ((winda.kierunek==+1 && winda.cel>winda.polozenie) || (winda.kierunek==-1 && winda.cel<winda.polozenie))
+				{
+					q.przesunWinde(nr,winda.kierunek)
+					setTimeout(new Function(`reakcjaNaRuchWindy(q.winda[${nr}],q.metody)`),1000)
+				}
+				else
+				{
+					winda.ruch=false
+					winda.kierunek=0
+					winda.wolna=false
+					winda.czasPostoju=0
+				}
+			}
+			else if (winda.cel != winda.polozenie)
+			{
+				q.pietro[`${winda.cel}`].czyCelWindy=true
+				winda.ruch=true
+				winda.wolna=false
+				winda.czasPostoju=0
+				if (winda.cel>winda.polozenie)
+				{
+					winda.kierunek=1
+				}
+				if (winda.cel<winda.polozenie)
+				{
+					winda.kierunek=-1
+				}
+				winda.wolna=false
+				reakcjaNaRusznieWindy(winda,q.pietro[`${winda.polozenie}`],q.metody)
+			}
+			else
+			{
+				if (winda.czasPostoju>winda.minimalnyCzasPostoju && (winda.kolejka[0] || winda.kolejka[0]==0))
+				{
+					q.pietro[`${winda.cel}`].czyCelWindy=false
+					winda.cel=winda.kolejka[0]
+					q.pietro[`${winda.cel}`].czyCelWindy=true
+					winda.kolejka=winda.kolejka.slice(1)
+				}
+				if (winda.cel != winda.polozenie)
+				{
+					winda.ruch=true
+					winda.wolna=false
+					winda.czasPostoju=0
+					if (winda.cel>winda.polozenie)
+					{
+						winda.kierunek=1
+					}
+					if (winda.cel<winda.polozenie)
+					{
+						winda.kierunek=-1
+					}
+					winda.wolna=false
+					reakcjaNaRusznieWindy(winda,q.pietro[`${winda.polozenie}`],q.metody)
+				}
+				else if (winda.kolejka.length==0)
+				{
+					winda.ruch=false
+					winda.wolna=true
+					winda.czasPostoju+=0.25
+					q.pietro[`${winda.polozenie}`].czyWinda=true
+				}
+				else
+				{
+					winda.ruch=false
+					winda.wolna=false
+					winda.czasPostoju+=0.25
+					q.pietro[`${winda.polozenie}`].czyWinda=true
+				}
+			}
+			setTimeout(()=>{q.cykliczna(Math.abs(nr-1))},700)
+		}
+		q.swiatloMruga=function()
+		{
+			const nr=Math.floor(Math.random()*2)
+			const moc=(Math.random()*0.8)+0.2
+			document.getElementsByClassName("windaStala")[nr].children[1].style.opacity=moc
+			document.getElementsByClassName("windaRuchoma")[nr].children[0].style.opacity=moc
+			setTimeout(q.swiatloMruga,(Math.random()*500)+200)
+		}
+		q.metody.zgasGuzikiWindyNr=function(nr)
+		{
+			if (!(nr==1||nr==2)){return alert("metoda zgasGuzikiWindyNr przyjmuje nr widny który jest równy 1 lub 2")}
+			const winda=q.winda[nr-1]
+			for (let a=0 ; a<winda.guziki.length ; a++)
+			{
+				winda.guziki[a].zgas()
+			}
+		}
+		q.metody.zgasGuzikiPieter=function()
+		{
+			for (klucz in q.pietro)
+			{
+				for (let a=0 ; a<q.pietro[klucz].guziki.length ; a++)
+				{
+					q.pietro[klucz].guziki[a].zgas()
+				}
+			}
+		}
+		q.metody.zamknijWszystkieDrzwiWpionieNr=function(nr)
+		{
+			if (!(nr==1||nr==2)){return alert("metoda zamknijWszystkieDrzwiWpionieNr przyjmuje nr pionu który jest równy 1 lub 2")}
+			for (klucz in q.pietro)
+			{
+				q.pietro[klucz].drzwi[nr-1].zamknij()
+			}
+		}
+		q.metody.winda_1=function()
+		{
+			return q.winda[0]
+		}
+		q.metody.winda_2=function()
+		{
+			return q.winda[1]
+		}
+		q.metody.pietro=function(nr)
+		{
+			if (!(Number(nr)>=-1 && Number(nr)<=7)){return alert("metoda piętro potrzebuje argumentu numer o wartości od -1 do 7")}
+			return q.pietro[`${nr}`]
+		}
+		q.swiatloMruga()
+		q.cykliczna()
+		q.pietro["0"].drzwi[0].otworz()
+		q.pietro["0"].drzwi[1].otworz()
+	}
+	function reakcjaNaGuzikWwindzie(guzik,winda,metody)
+	{
+		// metoda winda.mojePietro() pobiera piętro na którym jest winda. w niej dą metody otwarcia drzwi i zapalania przycisków
+		// metoda guzik.mojePietro() pobiera piętro na które prowadzi guzik.
+		// winda.kolejka to tablica przechowująca numery pięter. zlecenia są realizowane po kolei po upływie minimalnego postoju na każdym piętrze
+		console.log(winda.mojePietro())
+		console.log(guzik.mojePietro())
+		guzik.podswietl()
+		const pietroDocelowe=guzik.mojePietro()
+		if (winda.wolna)
+		{
+			winda.jedzDo(Number(guzik.opis))
+			pietroDocelowe.guziki[0].podswietl()
+		}
+		else if ((Number(guzik.opis)>winda.cel && Number(guzik.opis)<winda.polozenie) || (Number(guzik.opis)<winda.cel && Number(guzik.opis)>winda.polozenie))
+		{
+			winda.kolejka.unshift(winda.cel)
+			winda.jedzDo(Number(guzik.opis))
+		}
+		else
+		{
+			wina.kolejka.push(Number(guzik.opis))
+		}
+	}
+	function reakcjaNaGuzikNaPietrze(guzik,pietro,metody)
+	{
+		guzik.podswietl()
+		const winda_1=metody.winda_1()
+		const winda_2=metody.winda_2()
+		if (winda_1.wolna && winda_1.czasPostoju>winda_1.minimalnyCzasPostoju)
+		{
+			winda_1.jedzDo(pietro.numer)
+			winda_1.podswietlGuzikPietra(pietro.numer)
+		}
+		else if (winda_2.wolna && winda_2.czasPostoju>winda_2.minimalnyCzasPostoju)
+		{
+			winda_2.jedzDo(pietro.numer)
+			winda_2.podswietlGuzikPietra(pietro.numer)
+		}
+		else if ((winda_1.kierunek>0 && winda_1.cel>pietro.numer && winda_1.polozenie<pietro.numer) || (winda_1.kierunek<0 && winda_1.cel<pietro.numer && winda_1.polozenie>pietro.numer))
+		{
+			winda_1.kolejka.unshift(winda_1.cel)
+			winda_1.jedzDo(pietro.numer)
+			winda_1.podswietlGuzikPietra(pietro.numer)
+		}
+		else if ((winda_2.kierunek>0 && winda_2.cel>pietro.numer && winda_2.polozenie<pietro.numer) || (winda_2.kierunek<0 && winda_2.cel<pietro.numer && winda_2.polozenie>pietro.numer))
+		{
+			winda_2.kolejka.unshift(winda_2.cel)
+			winda_2.jedzDo(pietro.numer)
+			winda_2.podswietlGuzikPietra(pietro.numer)
+		}
+		else if ((pietro.numer>winda_1.cel && pietro.numer<winda_1.kolejka[0]||-7) || (pietro.numer<winda_1.cel && pietro.numer>winda_1.kolejka[0]||17))
+		{
+			winda_1.kolejka.unshift(pietro.numer)
+			winda_1.podswietlGuzikPietra(pietro.numer)
+		}
+		else if ((pietro.numer>winda_2.cel && pietro.numer<winda_2.kolejka[0]||-7) || (pietro.numer<winda_2.cel && pietro.numer>winda_2.kolejka[0]||17))
+		{
+			winda_2.kolejka.unshift(pietro.numer)
+			winda_2.podswietlGuzikPietra(pietro.numer)
+		}
+		else if (winda_1.kolejka.length<winda_2.kolejka.length)
+		{
+			winda_1.kolejka.push(pietro.numer)
+			winda_1.podswietlGuzikPietra(pietro.numer)
+		}
+		else
+		{
+			winda_2.kolejka.push(pietro.numer)
+			winda_2.podswietlGuzikPietra(pietro.numer)
+		}
+	}
+	function reakcjaNaPrzyjazdWindy(winda,pietro,metody)
+	{
+		pietro.drzwi[winda.nr-1].otworz()
+		winda.zgasGuzikPietra(pietro.numer)
+		pietro.guziki[0].zgas()
+		if (pietro.numer==0)
+		{
+			pietro.guziki[1].zgas()
+		}
+	}
+	function reakcjaNaRusznieWindy(winda,pietro,metody)
+	{
+		pietro.drzwi[winda.nr-1].zamknij()
+	}
+	function reakcjaNaRuchWindy(winda,metody)
+	{
+		//metody.zgasGuzikiWindyNr(winda.nr)
+		//metody.zgasGuzikiPieter()
+		//metody.zamknijWszystkieDrzwiWpionieNr(1)
+	}
+</script>
+<body onload="start()">
+	<div class="windyStale"></div>
+	<div class="windyRuchome">
+		<div class="szyb" style="left: 8vw">
+			<div class="linka" style="left: 4vw; height: 280vw;"></div>
+			<div class="linka" style="left: 13vw; height: 280vw;"></div>
+			<div class="linka" style="left: 8vw; height: 347vw;"></div>
+			<div class="linka" style="left: 11vw; height: 347vw;"></div>
+			<div class="windaRuchoma" style="top:280vw;">
+				<div class="swiatlo"></div>
+			</div>
+		</div>
+		<div class="szyb" style="left: 45vw">
+			<div class="linka" style="left: 4vw; height: 280vw;"></div>
+			<div class="linka" style="left: 13vw; height: 280vw;"></div>
+			<div class="linka" style="left: 8vw; height: 347vw;"></div>
+			<div class="linka" style="left: 11vw; height: 347vw;"></div>
+			<div class="windaRuchoma" style="top:280vw;">
+				<div class="swiatlo"></div>
+			</div>
+		</div>
+	</div>
+	<div class="pietra"></div>
+	<template>
+		<svg viewBox="0 0 7 24" class="skrzydlo">
+			<polygon points="0,0 3,0 3,21 4,21 4,3 3,3 3,0 7,0 7,24 0,24" style="fill:#2F1100;"/>
+			<div class="skrzydlo" style="box-shadow: inset 0 0 3vw #250700;"></div>
+			<div style="position: absolute; top:2.7vw; left:2.7vw; height: 18.6vw; width: 1.6vw; box-shadow: inset 0 0 0.5vw black, 0 0 1vw black; background: rgba(255,255,255,0.05); border: solid 0.5vw black;"></div>
+		</svg>
+	</template>
+	<template>
+		<svg viewBox="0 0 148 80" style="position:absolute; width: 72vw; height: 40vw;">
+			<polygon points="0,0 0,52 23,52 23,27 53,27 53,52 99,52 99,27 129,27 129,52 148,52 148,0" style="fill:#4D4B39;"/>
+			<polygon points="0,85 0,51 23,51 23,80 53,80 53,51 99,51 99,80 129,80 129,51 148,51 148,85" style="fill:#462F07;"/>
+			<polygon points="0,0 148,0 148,3 0,3" style="fill:#1B1107;"/>
+			<polygon points="0,3 148,3 148,4 0,4" style="fill:#575743;"/>
+			<polygon points="0,77 148,77 148,78 0,78" style="fill:#392511;"/>
+			<polygon points="0,78 148,78 148,90 0,90" style="fill:#1B1107;"/>
+		</svg>
+		<div class="rama" style="left:10.75vw"></div>
+		<div class="rama" style="left:47.65vw"></div>
+		<div style="position: absolute; bottom: -1; height: 2vh; width: 72vw; background: #1B1107;"></div>
+		<div style="position:absolute; top:2vw; width: 72vw; height: 37vw; box-shadow: inset 0 -5vw 17vw rgba(0,0,0,0.7);"></div>
+	</template>
+</body>
+</html>

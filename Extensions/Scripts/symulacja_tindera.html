@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>symulator tindera</title>
+<style type="text/css">
+	*
+	{
+		margin: 0;
+		padding: 0;
+		background: black;
+		font-size: 2.5vh;
+		color: white;
+	}
+</style>
+<meta charset="utf-8" />
+<script type="text/javascript">
+let g;
+let ankieta=[]
+const mezczyzni={serduszka:100,szansaDania:0.1,populacja:[]}
+const kobiety={serduszka:100,szansaDania:0.1,populacja:[]}
+const statystykiKobiety={pary:[],odwiedzonePrzezeMnie:[],odwiedzonoMnie:[],dostaneSerduszka:[],max:0}
+const statystykiMezczyzny={pary:[],odwiedzonePrzezeMnie:[],odwiedzonoMnie:[],dostaneSerduszka:[],max:0}
+ankieta[0]={pytanie:`ilośc kont kobiet w symulacji (uwaga na wydajność)`}
+ankieta[1]={pytanie:`ilośc kont mężczyzn w symulacji (uwaga na wydajność)`}
+ankieta[2]={pytanie:`ilość serduszek dla kobiet (uwaga na wydajność)`}
+ankieta[3]={pytanie:`ilość serduszek dla mężczyzn (uwaga na wydajność)`}
+ankieta[4]={pytanie:`szanse dania serduszka przez kobietę dla meżczyzny w procentach`}
+ankieta[5]={pytanie:`szanse dania serduszka przez mężczyznę dla kobiety w procentach`}
+function start()
+{
+	g=document.body
+	for (let a=0 ; a<ankieta.length ; a++)
+	{
+		let t=document.createElement("div")
+		t.innerHTML=ankieta[a].pytanie
+		g.appendChild(t)
+		t=document.createElement("textarea")
+		ankieta[a].odpowiedz=t
+		g.appendChild(t)
+	}
+	let t=document.createElement("div")
+	t.innerHTML="rozpocznij"
+	t.style.color="red"
+	t.onclick = new Function(`console.log("test");symuluj()`)
+	g.appendChild(t)
+}
+function symuluj(etap,informacja)
+{
+	if (!etap)
+	{
+		kobiety.serduszka=Number(ankieta[2].odpowiedz.value)||100
+		if (kobiety.serduszka>(Number(ankieta[0].odpowiedz.value)||10000)*0.3)
+		{
+			kobiety.serduszka=Math.ceil((Number(ankieta[0].odpowiedz.value)||10000)*0.3)
+		}
+		mezczyzni.serduszka=Number(ankieta[3].odpowiedz.value)||100
+		if (mezczyzni.serduszka>(Number(ankieta[1].odpowiedz.value)||10000)*0.3)
+		{
+			mezczyzni.serduszka=Math.ceil((Number(ankieta[1].odpowiedz.value)||10000)*0.3)
+		}
+		kobiety.szansaDania=(Number(ankieta[4].odpowiedz.value)/100)||0.14
+		if (kobiety.szansaDania>1){kobiety.szansaDania=1}
+		else if (kobiety.szansaDania<0.01){kobiety.szansaDania=0.01}
+		mezczyzni.szansaDania=(Number(ankieta[5].odpowiedz.value)/100)||0.56
+		if (mezczyzni.szansaDania>1){mezczyzni.szansaDania=1}
+		else if (mezczyzni.szansaDania<0.01){mezczyzni.szansaDania=0.01}
+		g.innerHTML="rozpoczęto tworzenie kont"
+		return setTimeout(()=>{symuluj(1)},50)
+	}
+	else if (etap==1)
+	{
+		if (kobiety.populacja.length<(Number(ankieta[0].odpowiedz.value)||10000))
+		{
+			let b=7000
+			for (let a=kobiety.populacja.length ; a<(Number(ankieta[0].odpowiedz.value)||10000) ; a++)
+			{
+				b--
+				if (b<0){break}
+				kobiety.populacja[a]={rozdane:[],dostane:[],odwiedzonePrzezeMnie:0,odwiedzonoMnie:0}
+			}
+			g.innerHTML=`konta kobiet ${Math.floor((kobiety.populacja.length/(Number(ankieta[0].odpowiedz.value)||10000))*1000)/10}%`
+			return setTimeout(()=>{symuluj(1)},50)
+		}
+		else if (mezczyzni.populacja.length<(Number(ankieta[1].odpowiedz.value)||10000))
+		{
+			let b=7000
+			for (let a=mezczyzni.populacja.length ; a<(Number(ankieta[1].odpowiedz.value)||10000) ; a++)
+			{
+				b--
+				if (b<0){break}
+				mezczyzni.populacja[a]={rozdane:[],dostane:[],odwiedzonePrzezeMnie:0,odwiedzonoMnie:0}
+			}
+			g.innerHTML=`konta mężczyzn ${Math.floor((mezczyzni.populacja.length/(Number(ankieta[1].odpowiedz.value)||10000))*1000)/10}%`
+			return setTimeout(()=>{symuluj(1)},50)
+		}
+		else
+		{
+			return setTimeout(()=>{symuluj(2)},50)
+		}
+	}
+	else if (etap==2)
+	{
+		if (!informacja)
+		{
+			g.innerHTML=`rozpoczęto rozdawanie serduszek przez kobiety`
+			informacja={typ:"kobiety",nr:0}
+			return setTimeout(()=>{symuluj(2,informacja)},50)
+		}
+		if (informacja.typ=="kobiety")
+		{
+			let b=7000
+			for (let a=informacja.nr ; a<kobiety.populacja.length ; a++)
+			{
+				let widzialam=[]
+				for (let c=0 ; c<mezczyzni.populacja.length*2 ; c++)
+				{
+					b--
+					let facet=Math.floor(Math.random()*mezczyzni.populacja.length)
+					if (czyWtablicy(facet,widzialam))
+					{
+						continue
+					}
+					widzialam.push(facet)
+					kobiety.populacja[a].odwiedzonePrzezeMnie++
+					mezczyzni.populacja[facet].odwiedzonoMnie++
+					if (Math.random()<kobiety.szansaDania)
+					{
+						kobiety.populacja[a].rozdane.push(facet)
+						mezczyzni.populacja[facet].dostane.push(a)
+					}
+					if (kobiety.populacja[a].rozdane.length>=kobiety.serduszka)
+					{
+						break
+					}
+				}
+				informacja.nr++
+				if (b<0){break}
+			}
+			g.innerHTML=`rozdawanie serduszek przez kobiety ${Math.floor((informacja.nr/kobiety.populacja.length)*1000)/10}%`
+			if (informacja.nr<kobiety.populacja.length)
+			{
+				return setTimeout(()=>{symuluj(2,informacja)},50)
+			}
+			else
+			{
+				informacja={typ:"mezczyzni",nr:0}
+				return setTimeout(()=>{symuluj(2,informacja)},50)
+			}
+		}
+		else if (informacja.typ=="mezczyzni")
+		{
+			let b=7000
+			for (let a=informacja.nr ; a<mezczyzni.populacja.length ; a++)
+			{
+				let widzialem=[]
+				for (let c=0 ; c<kobiety.populacja.length*2 ; c++)
+				{
+					b--
+					let baba=Math.floor(Math.random()*kobiety.populacja.length)
+					if (czyWtablicy(baba,widzialem))
+					{
+						continue
+					}
+					widzialem.push(baba)
+					mezczyzni.populacja[a].odwiedzonePrzezeMnie++
+					kobiety.populacja[baba].odwiedzonoMnie++
+					if (Math.random()<mezczyzni.szansaDania)
+					{
+						mezczyzni.populacja[a].rozdane.push(baba)
+						kobiety.populacja[baba].dostane.push(a)
+					}
+					if (mezczyzni.populacja[a].rozdane.length>=mezczyzni.serduszka)
+					{
+						break
+					}
+				}
+				informacja.nr++
+				if (b<0){break}
+			}
+			g.innerHTML=`rozdawanie serduszek przez mężczyzn ${Math.floor((informacja.nr/mezczyzni.populacja.length)*1000)/10}%`
+			if (informacja.nr<mezczyzni.populacja.length)
+			{
+				return setTimeout(()=>{symuluj(2,informacja)},50)
+			}
+			else
+			{
+				return setTimeout(()=>{symuluj(3)},50)
+			}
+		}
+	}
+	else if (etap==3)
+	{
+		if (!informacja)
+		{
+			g.innerHTML=`rozpoczęto zliczanie statystyk`
+			informacja={typ:"kobiety",nr:0}
+			return setTimeout(()=>{symuluj(3,informacja)},50)
+		}
+		if (informacja.typ=="kobiety")
+		{
+			let b=2000
+			for (let a=informacja.nr ; a<kobiety.populacja.length ; a++)
+			{
+				b--
+				let t=liczpary(kobiety.populacja[a])
+				statystykiKobiety.pary[t]=(statystykiKobiety.pary[t]||0)+1
+				statystykiKobiety.odwiedzonePrzezeMnie[kobiety.populacja[a].odwiedzonePrzezeMnie]=(statystykiKobiety.odwiedzonePrzezeMnie[kobiety.populacja[a].odwiedzonePrzezeMnie]||0)+1
+				statystykiKobiety.odwiedzonoMnie[kobiety.populacja[a].odwiedzonoMnie]=(statystykiKobiety.odwiedzonoMnie[kobiety.populacja[a].odwiedzonoMnie]||0)+1
+				statystykiKobiety.dostaneSerduszka[kobiety.populacja[a].dostane.length]=(statystykiKobiety.dostaneSerduszka[kobiety.populacja[a].dostane.length]||0)+1
+				informacja.nr++
+				if (b<0){break}
+			}
+			g.innerHTML=`statystyki dla kobiet ${Math.floor((informacja.nr/kobiety.populacja.length)*1000)/10}%`
+			if (informacja.nr<kobiety.populacja.length)
+			{
+				return setTimeout(()=>{symuluj(3,informacja)},50)
+			}
+			else
+			{
+				informacja={typ:"mezczyzni",nr:0}
+				return setTimeout(()=>{symuluj(3,informacja)},50)
+			}
+		}
+		else if (informacja.typ=="mezczyzni")
+		{
+			let b=7000
+			for (let a=informacja.nr ; a<mezczyzni.populacja.length ; a++)
+			{
+				b--
+				let t=liczpary(mezczyzni.populacja[a])
+				statystykiMezczyzny.pary[t]=(statystykiMezczyzny.pary[t]||0)+1
+				statystykiMezczyzny.odwiedzonePrzezeMnie[mezczyzni.populacja[a].odwiedzonePrzezeMnie]=(statystykiMezczyzny.odwiedzonePrzezeMnie[mezczyzni.populacja[a].odwiedzonePrzezeMnie]||0)+1
+				statystykiMezczyzny.odwiedzonoMnie[mezczyzni.populacja[a].odwiedzonoMnie]=(statystykiMezczyzny.odwiedzonoMnie[mezczyzni.populacja[a].odwiedzonoMnie]||0)+1
+				statystykiMezczyzny.dostaneSerduszka[mezczyzni.populacja[a].dostane.length]=(statystykiMezczyzny.dostaneSerduszka[mezczyzni.populacja[a].dostane.length]||0)+1
+				informacja.nr++
+				if (b<0){break}
+			}
+			g.innerHTML=`statystyki dla kobiet ${Math.floor((informacja.nr/mezczyzni.populacja.length)*1000)/10}%`
+			if (informacja.nr<mezczyzni.populacja.length)
+			{
+				return setTimeout(()=>{symuluj(3,informacja)},50)
+			}
+			else
+			{
+				g.innerHTML=`tworzenie wykresu`
+				return setTimeout(()=>{pokaz()},50)
+			}
+		}
+	}
+}
+function czyWtablicy(wartosc,tablica)
+{
+	for (let a=0 ; a<tablica.length ; a++)
+	{
+		if (tablica[a]==wartosc)
+		{
+			return 1
+		}
+	}
+}
+function liczpary(osoba)
+{
+	let zwrotka=0
+	for (let a=0 ; a<osoba.rozdane.length ; a++)
+	{
+		for (let b=0 ; b<osoba.dostane.length ; b++)
+		{
+			if (osoba.rozdane[a]==osoba.dostane[b])
+			{
+				zwrotka++
+			}
+		}
+	}
+	return zwrotka
+}
+function pokaz()
+{
+	statystykiKobiety.max=kobiety.populacja.length
+	statystykiMezczyzny.max=mezczyzni.populacja.length
+	g.innerHTML=""
+	let t=document.createElement("div")
+	t.innerHTML="wykres ilości par"
+	g.appendChild(t)
+	let max=10
+	for (let a=0 ; a<Math.max(statystykiKobiety.pary.length,statystykiMezczyzny.pary.length) ; a++)
+	{
+		max=Math.max(max,statystykiKobiety.pary[a]||0)
+		max=Math.max(max,statystykiMezczyzny.pary[a]||0)
+	}
+	t=wykres(statystykiKobiety.pary,statystykiMezczyzny.pary,max+10)
+	g.appendChild(t)
+	//
+	t=document.createElement("div")
+	t.innerHTML="dostane serduszka"
+	g.appendChild(t)
+	max=10
+	for (let a=0 ; a<Math.max(statystykiKobiety.dostaneSerduszka.length,statystykiMezczyzny.dostaneSerduszka.length) ; a++)
+	{
+		max=Math.max(max,statystykiKobiety.dostaneSerduszka[a]||0)
+		max=Math.max(max,statystykiMezczyzny.dostaneSerduszka[a]||0)
+	}
+	t=wykres(statystykiKobiety.dostaneSerduszka,statystykiMezczyzny.dostaneSerduszka,max+10)
+	g.appendChild(t)
+	//
+	t=document.createElement("div")
+	t.innerHTML="ilość profili które on/ona odwiedzili"
+	g.appendChild(t)
+	max=10
+	for (let a=0 ; a<Math.max(statystykiKobiety.odwiedzonePrzezeMnie.length,statystykiMezczyzny.odwiedzonePrzezeMnie.length) ; a++)
+	{
+		max=Math.max(max,statystykiKobiety.odwiedzonePrzezeMnie[a]||0)
+		max=Math.max(max,statystykiMezczyzny.odwiedzonePrzezeMnie[a]||0)
+	}
+	t=wykres(statystykiKobiety.odwiedzonePrzezeMnie,statystykiMezczyzny.odwiedzonePrzezeMnie,max+10)
+	g.appendChild(t)
+	//
+	t=document.createElement("div")
+	t.innerHTML="ilość profili które go/ją odwiedziły"
+	g.appendChild(t)
+	max=10
+	for (let a=0 ; a<Math.max(statystykiKobiety.odwiedzonoMnie.length,statystykiMezczyzny.odwiedzonoMnie.length) ; a++)
+	{
+		max=Math.max(max,statystykiKobiety.odwiedzonoMnie[a]||0)
+		max=Math.max(max,statystykiMezczyzny.odwiedzonoMnie[a]||0)
+	}
+	t=wykres(statystykiKobiety.odwiedzonoMnie,statystykiMezczyzny.odwiedzonoMnie,max+10)
+	g.appendChild(t)
+	//
+	let s="dane do excela & jest separatorem<br><br>"
+	for (let a=0 ; a<4 ; a++)
+	{
+		s+=["pary","dostane serduszka","ile odwiedził/a","ile odwiedziło go/ją"][a]
+		if (a<3){s+="&&&&"}
+	}
+	s+="<br>"
+	for (let a=0 ; a<4 ; a++)
+	{
+		s+="kobiety&&mężczyźni"
+		if (a<3){s+="&&"}
+	}
+	s+="<br>"
+	for (let a=0 ; a<4 ; a++)
+	{
+		s+="wartość&iloscOsob&wartość&iloscOsob"
+		if (a<3){s+="&"}
+	}
+	s+="<br>"
+	for (let i=0 ; i<Math.max(statystykiKobiety.pary.length,statystykiKobiety.dostaneSerduszka.length,statystykiKobiety.odwiedzonoMnie.length,statystykiKobiety.odwiedzonePrzezeMnie.length,statystykiMezczyzny.pary.length,statystykiMezczyzny.dostaneSerduszka.length,statystykiMezczyzny.odwiedzonoMnie.length,statystykiMezczyzny.odwiedzonePrzezeMnie.length) ; i++)
+	{
+		for (let a=0 ; a<4 ; a++)
+		{
+			for (let b=0 ; b<2 ; b++)
+			{
+				s+=i+"&"
+				if (b==0)
+				{
+					s+=statystykiKobiety[["pary","dostaneSerduszka","odwiedzonePrzezeMnie","odwiedzonoMnie"][a]][i]||0
+				}
+				else
+				{
+					s+=statystykiMezczyzny[["pary","dostaneSerduszka","odwiedzonePrzezeMnie","odwiedzonoMnie"][a]][i]||0
+				}
+				if (a<3 || b==0){s+="&"}
+			}
+		}
+		s+="<br>"
+	}
+	t=document.createElement("div")
+	t.innerHTML=s
+	g.appendChild(t)
+	function wykres(tab1,tab2,wMax)
+	{
+		let d=Math.max(tab1.length,tab2.length)
+		let przeskok=Math.round(d/50)
+		if (przeskok<1){przeskok=1}
+		let w=document.createElement("div")
+		w.style.marginBottom="10vh"
+		w.style.background=`#111111`
+		w.style.position="relative"
+		w.style.width=`90vw`
+		w.style.height=`90vh`
+		w.fontSize=`0.7vh`
+		let c=0
+		let y=0
+		for (let a=0 ; a<d ; a++)
+		{
+			let t=[0,0]
+			for (let b=0 ; b<przeskok ; b++)
+			{
+				t[0]+=tab1[a]||0
+				t[1]+=tab2[a]||0
+				a++
+			}
+			t[0]/=przeskok
+			t[1]/=przeskok
+			for (let b=0 ; b<2 ; b++)
+			{
+				let e=document.createElement("div")
+				e.style.position=`absolute`
+				e.style.bottom="0px"
+				e.style.opacity=0.57
+				e.style.height=`${Math.floor((t[b]/wMax)*1000)/10}%`
+				e.style.width=`${50/Math.min(d,50)}%`
+				e.style.left=`${c}%`
+				w.appendChild(e)
+				if (b==0)
+				{
+					let f=document.createElement("div")
+					f.style.position.absolute
+					f.style.bottom=`-2vh`
+					f.style.fontSize=`${25/Math.min(d,50)}vh`
+					f.style.textAlign="center"
+					f.style.width=`${100/Math.min(d,50)}%`
+					f.style.left=`${c}%`
+					w.appendChild(f)
+				}
+				c+=50/Math.min(d,50)
+				y++
+				e.style.background=["#f7077f","#077ff7"][b]
+			}
+		}
+		return w
+	}
+}
+</script>
+<body onload="start()">
+</body>
+</html>
