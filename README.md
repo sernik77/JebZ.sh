@@ -6,4 +6,5 @@
 - `Shell` - Skrypty do automatyzacji kont, (self-bot)
 - `Scrapers` - Skrypty do scrapowania rozmaitych danych, statystyk, i wizualizacji
 - `Extras` - Materiały dodatkowe typu snippety, poradniki, komendy, instrukcje etc
+- `Backend` - Skrypty do backendu (dzidradar)
 
